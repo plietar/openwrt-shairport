@@ -1,0 +1,9 @@
+config airplay
+    # option name 'Airplay'
+    # option buffer 220
+    # option output alsa
+    # option mdns tinysvcmdns
+    # option port 5002
+    # option password 'foobar'
+    # option output_options '-d default:Dongle'
+

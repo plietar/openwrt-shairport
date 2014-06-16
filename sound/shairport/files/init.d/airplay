@@ -1,0 +1,46 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+
+START=50
+
+handle_airplay() {
+  local name
+  local output
+  local mdns
+  local port
+  local password
+  local buffer
+  local opts
+
+  config_get name     $1 name
+  config_get output   $1 output
+  config_get mdns     $1 mdns
+  config_get port     $1 port
+  config_get password $1 password
+  config_get buffer   $1 buffer
+  config_get opts     $1 output_options
+  
+  procd_open_instance
+  procd_set_param command /usr/bin/shairport \
+    ${name:+-a "$name"} \
+    ${output:+-o "$output"} \
+    ${mdns:+-m "$mdns" } \
+    ${port:+-p "$port" } \
+    ${password:+-k "$password" } \
+    ${buffer:+-b "$buffer"} \
+    ${opts:+-- $opts}
+  procd_set_param respawn
+  procd_close_instance
+}
+
+start_service() {
+  config_load airplay
+  config_foreach handle_airplay airplay 
+}
+
+service_triggers()
+{
+  procd_add_reload_trigger "airplay"
+}
+
